@@ -1,18 +1,19 @@
 local f = CreateFrame("Frame", "RaidListAddonFrame")
 
+-- Edit box frame setup
 editBoxFrame = CreateFrame("Frame", "RaidListEditBoxFrame", UIParent)
- editBoxFrame:SetWidth(100)
- editBoxFrame:SetHeight(50)
- editBoxFrame:SetPoint("LEFT", UIParent, "CENTER")
- editBoxFrame:SetMovable(true)
- editBoxFrame:EnableMouse(true)
- editBoxFrame:RegisterForDrag("LeftButton")
- editBoxFrame:SetScript("OnDragStart", editBoxFrame.StartMoving)
- editBoxFrame:SetScript("OnDragStop", editBoxFrame.StopMovingOrSizing)
- 
- local background = CreateFrame("Frame", nil, editBoxFrame)
- background:SetAllPoints(editBoxFrame)
- background:SetBackdropColor(0,0,0,0)
+editBoxFrame:SetWidth(100)
+editBoxFrame:SetHeight(50)
+editBoxFrame:SetPoint("LEFT", UIParent, "CENTER")
+editBoxFrame:SetMovable(true)
+editBoxFrame:EnableMouse(true)
+editBoxFrame:RegisterForDrag("LeftButton")
+editBoxFrame:SetScript("OnDragStart", editBoxFrame.StartMoving)
+editBoxFrame:SetScript("OnDragStop", editBoxFrame.StopMovingOrSizing)
+
+local background = CreateFrame("Frame", nil, editBoxFrame)
+background:SetAllPoints(editBoxFrame)
+background:SetBackdropColor(0, 0, 0, 0)
 
 local editBox = CreateFrame("EditBox", nil, editBoxFrame, "InputBoxTemplate")
 editBox:SetBackdrop({
@@ -35,13 +36,13 @@ toggleButton:SetWidth(25)
 toggleButton:SetHeight(20)
 toggleButton:SetText("OK")
 toggleButton:SetPoint("TOPLEFT", editBoxFrame, "TOPRIGHT", 55, 8)
-toggleButton:SetScript("OnClick",  function()
+toggleButton:SetScript("OnClick", function()
     if editBoxFrame:IsShown() then
         editBoxFrame:Hide()
     end
 end)
 
--- raid member list
+-- Raid member list
 local function getRaidMemberList()
     local raidMembers = {}
     local numRaidMembers = GetNumRaidMembers()
@@ -55,45 +56,36 @@ local function getRaidMemberList()
 end
 
 local function displayRaidList()
-    
     local raidMembers = getRaidMemberList()
     local raidListText = table.concat(raidMembers, "\n")
     
     editBox:SetText(raidListText)
     
-    -- frame height
+    -- Frame height calculation
     local numLines = GetNumRaidMembers()
-   
-    local padding = 5;  -- top + bottom padding
+    local padding = 5  -- Top and bottom padding
     local calculatedHeight = (10 * (numLines + 1)) + padding
-    
     
     editBoxFrame:SetHeight(calculatedHeight)
 	editBoxFrame:Show()
 end
 
-
+-- Minimap button 
 minimapButton = CreateFrame("Button", "RaidListAddonMinimapButton", Minimap)
 minimapButton:SetWidth(32)
 minimapButton:SetHeight(32)
 minimapButton:SetNormalTexture("Interface\\Icons\\ability_stealth")
 minimapButton:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
-minimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -10, -10)
-minimapButton:SetScript("OnClick", onMinimapClick)
+
+-- minimap icon location
+minimapButton:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 10, -10)
+
 minimapButton:SetScript("OnClick", function()
     if editBoxFrame:IsShown() then
         editBoxFrame:Hide()
     elseif GetNumRaidMembers() > 0 then
-		displayRaidList()
-	else
+        displayRaidList()
+    else
         DEFAULT_CHAT_FRAME:AddMessage("You are not in a raid.")
     end
 end)
-
--- minimap button positioning
-local function OnUpdate()
-    minimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -10, -10)
-end
-
--- Register the update function
-f:SetScript("OnUpdate", OnUpdate)
