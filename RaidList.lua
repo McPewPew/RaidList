@@ -86,13 +86,12 @@ minimapButton:SetScript("OnClick", function()
     elseif GetNumRaidMembers() > 0 then
 		displayRaidList()
 	else
-        print("You are not in a raid.")
+        DEFAULT_CHAT_FRAME:AddMessage("You are not in a raid.")
     end
 end)
 
 -- minimap button positioning
 local function OnUpdate()
-    local angle = Minimap:GetAngle()
     minimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -10, -10)
 end
 
