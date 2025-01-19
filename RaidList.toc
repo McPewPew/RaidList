@@ -1,0 +1,6 @@
+## Interface: 11200
+## Title: Raid List
+## Notes: Displays a list of raid members in an editbox.
+## Author: McPewPew
+## Version: 0.1
+RaidList.lua
